@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FC Ultimate Draft — Улучши свой состав</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#090d16" />
 </head>
 <body>
   <div class="app">
@@ -392,5 +394,12 @@
   </div>
 
   <script src="script.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js");
+      });
+    }
+  </script>
 </body>
 </html>

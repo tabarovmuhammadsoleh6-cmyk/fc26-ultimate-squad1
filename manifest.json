@@ -1,8 +1,9 @@
 {
-  "name": "Моя игра",
-  "short_name": "Игра",
+  "name": "FC 26 ULTIMATE SQUAD",
+  "short_name": "FC 26 Squad",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#090d16",
-  "theme_color": "#090d16"
+  "theme_color": "#090d16",
+  "orientation": "any"
 }

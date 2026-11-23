@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FC Ultimate Draft — Улучши свой состав</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Верхняя панель -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="badge">FC 26</span>
+        <h1>ULTIMATE SQUAD</h1>
+      </div>
+      <div class="stats">
+        <div class="stat-box coins">
+          <span>💰 Монеты:</span>
+          <strong id="coins">2000</strong>
+        </div>
+        <div class="stat-box ovr">
+          <span>⭐ Рейтинг OVR:</span>
+          <strong id="team-ovr">69</strong>
+        </div>
+        <div class="stat-box wins">
+          <span>🏆 Кубки:</span>
+          <strong id="wins">0</strong>
+        </div>
+        <button class="reset-btn" onclick="resetProgress()" title="Сбросить сохранение">🗑️ Сброс</button>
+      </div>
+    </header>
+
+    <!-- Главное меню -->
+    <section id="main-menu" class="main-menu">
+      <h2 class="menu-title">ГЛАВНОЕ МЕНЮ</h2>
+      <div class="menu-grid">
+        <button class="menu-card" onclick="openSection('squad')">
+          <span class="menu-emoji">⚽</span>
+          <span class="menu-label">Состав</span>
+          <span class="menu-sub">11 позиций, схемы и прокачка (1→5 🏆, макс +5)</span>
+        </button>
+
+        <button class="menu-card" onclick="openSection('packs')">
+          <span class="menu-emoji">🎁</span>
+          <span class="menu-label">Магазин паков</span>
+          <span class="menu-sub">Паки до 105 OVR и паки за 25 / 100 🏆</span>
+        </button>
+
+        <button class="menu-card" onclick="openSection('match')">
+          <span class="menu-emoji">🔥</span>
+          <span class="menu-label">Матч</span>
+          <span class="menu-sub">Лиги ИИ (до +20 🏆) и матч 45с / 90'</span>
+        </button>
+
+        <button class="menu-card event-menu-card" onclick="openSection('event')">
+          <span class="menu-emoji">⚡</span>
+          <span class="menu-label">Ивент: Лихорадка</span>
+          <span class="menu-sub">Серия побед, мини-игра и ивент-пак</span>
+        </button>
+
+        <button class="menu-card promo-menu-card" onclick="openSection('promos')">
+          <span class="menu-emoji">🎟️</span>
+          <span class="menu-label">Промокоды</span>
+          <span class="menu-sub">Ввод промокода</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Навигация внутри разделов -->
+    <nav id="sub-nav" class="tabs hidden">
+      <button class="back-menu-btn" onclick="goMainMenu()">🏠 Меню</button>
+      <button class="tab-btn" data-tab="squad">⚽ Состав</button>
+      <button class="tab-btn" data-tab="packs">🎁 Магазин паков</button>
+      <button class="tab-btn" data-tab="match">🔥 Матч</button>
+      <button class="tab-btn" data-tab="event">⚡ Ивент</button>
+      <button class="tab-btn" data-tab="promos">🎟️ Промокоды</button>
+    </nav>
+
+    <!-- Раздел 1: Состав -->
+    <section id="tab-squad" class="tab-content">
+      <div class="squad-toolbar">
+        <div class="formation-picker">
+          <button id="formation-btn" class="formation-btn" onclick="cycleFormation()">
+            📐 Схема: <strong id="current-formation-label">4-3-3</strong>
+          </button>
+          <div id="formation-chips" class="formation-chips"></div>
+        </div>
+        <button class="auto-btn" onclick="autoFillBestSquad()">⚡ Автосборка</button>
+      </div>
+
+      <div class="pitch">
+        <div id="formation-board" class="formation-board"></div>
+      </div>
+
+      <div class="club-section">
+        <h3>Клуб (Клик — в основу; навести мышь + <strong>Shift</strong> — быстрая продажа; прокачка: 1 → 5 🏆)</h3>
+        <div id="club-list" class="club-grid"></div>
+      </div>
+    </section>
+
+    <!-- Раздел 2: Магазин паков -->
+    <section id="tab-packs" class="tab-content">
+      <h3 class="section-heading">👑 Специальные паки за кубки</h3>
+      <div class="packs-grid special-grid">
+        <div class="pack-card ultra-99">
+          <span class="promo-tag wins-tag">25 КУБКОВ 🏆</span>
+          <div class="pack-icon">🌟👑</div>
+          <h3>Специальный пак 99 OVR</h3>
+          <p>Гарантированный игрок 99 OVR в клуб</p>
+          <button class="buy-btn win-buy-btn" onclick="buyPack99ForWins()">
+            Купить за 25 кубков 🏆
+          </button>
+        </div>
+
+        <div class="pack-card ultra-105">
+          <span class="promo-tag wins-tag">100 КУБКОВ 🏆</span>
+          <div class="pack-icon">🪐🔱</div>
+          <h3>Легендарный пак 105 OVR</h3>
+          <p>Гарантированный игрок 105 OVR без прокачки</p>
+          <button class="buy-btn win-buy-btn" onclick="buyPack105ForWins()">
+            Купить за 100 кубков 🏆
+          </button>
+        </div>
+      </div>
+
+      <h3 class="section-heading">📦 Одиночные паки</h3>
+      <div class="packs-grid">
+        <div class="pack-card bronze">
+          <div class="pack-icon">🥉</div>
+          <h3>Стартовый пак</h3>
+          <p>Игроки 68–72 OVR</p>
+          <button class="buy-btn" onclick="openMultiPack('bronze', 1, 400)">Купить (1 шт) — 400 💰</button>
+        </div>
+
+        <div class="pack-card silver">
+          <div class="pack-icon">🥈</div>
+          <h3>Усиленный пак</h3>
+          <p>Игроки 77–81 OVR</p>
+          <button class="buy-btn" onclick="openMultiPack('silver', 1, 850)">Купить (1 шт) — 850 💰</button>
+        </div>
+
+        <div class="pack-card gold">
+          <div class="pack-icon">🥇</div>
+          <h3>Золотой пак</h3>
+          <p>Звёзды 85–88 OVR</p>
+          <button class="buy-btn" onclick="openMultiPack('gold', 1, 1400)">Купить (1 шт) — 1400 💰</button>
+        </div>
+
+        <div class="pack-card totw">
+          <div class="pack-icon">🔥</div>
+          <h3>Пак Команды Недели</h3>
+          <p>Карты TOTW 88–90 OVR</p>
+          <button class="buy-btn" onclick="openMultiPack('totw', 1, 2100)">Купить (1 шт) — 2100 💰</button>
+        </div>
+
+        <div class="pack-card hero">
+          <div class="pack-icon">🦸</div>
+          <h3>Пак Героев</h3>
+          <p>Герои 89–91 OVR</p>
+          <button class="buy-btn" onclick="openMultiPack('hero', 1, 2600)">Купить (1 шт) — 2600 💰</button>
+        </div>
+
+        <div class="pack-card toty">
+          <div class="pack-icon">🌌</div>
+          <h3>Пак TOTY</h3>
+          <p>Команда года 94–96 OVR</p>
+          <button class="buy-btn" onclick="openMultiPack('toty', 1, 3000)">Купить (1 шт) — 3000 💰</button>
+        </div>
+
+        <div class="pack-card icon">
+          <div class="pack-icon">💎</div>
+          <h3>Пак Кумиров</h3>
+          <p>Легенды 92–98 OVR</p>
+          <button class="buy-btn" onclick="openMultiPack('icon', 1, 3200)">Купить (1 шт) — 3200 💰</button>
+        </div>
+
+        <div class="pack-card fut102">
+          <div class="pack-icon">⚡🛸</div>
+          <h3>Пак Сверхновых 100–102</h3>
+          <p>Игроки 100–102 OVR без прокачки</p>
+          <button class="buy-btn" onclick="openMultiPack('fut102', 1, 4800)">Купить (1 шт) — 4800 💰</button>
+        </div>
+
+        <div class="pack-card ultra105">
+          <div class="pack-icon">👑🌠</div>
+          <h3>Пак Титанов 103–105</h3>
+          <p>Топ-игроки 103–105 OVR без прокачки</p>
+          <button class="buy-btn" onclick="openMultiPack('ultra105', 1, 7500)">Купить (1 шт) — 7500 💰</button>
+        </div>
+      </div>
+
+      <h3 class="section-heading">🔥 Акции и мега-наборы паков</h3>
+      <div class="packs-grid promo-grid">
+        <div class="pack-card promo">
+          <span class="promo-tag">-25% АКЦИЯ</span>
+          <div class="pack-icon">🎁🎁🎁</div>
+          <h3>Тройной Золотой Набор</h3>
+          <p>3 Золотых пака (85–88 OVR)</p>
+          <button class="buy-btn" onclick="openMultiPack('gold', 3, 3150)">Взять 3 пака — 3150 💰</button>
+        </div>
+
+        <div class="pack-card promo">
+          <span class="promo-tag">ХИТ x5</span>
+          <div class="pack-icon">⚡📦</div>
+          <h3>Мега-связка Усиленных</h3>
+          <p>5 Усиленных паков (77–81 OVR)</p>
+          <button class="buy-btn" onclick="openMultiPack('silver', 5, 3200)">Взять 5 паков — 3200 💰</button>
+        </div>
+
+        <div class="pack-card promo">
+          <span class="promo-tag">ГЕРОИ x3</span>
+          <div class="pack-icon">🦸🦸🦸</div>
+          <h3>Лига Героев x3</h3>
+          <p>3 Пака Героев (89–91 OVR)</p>
+          <button class="buy-btn" onclick="openMultiPack('hero', 3, 5800)">Взять 3 пака — 5800 💰</button>
+        </div>
+
+        <div class="pack-card promo-vip">
+          <span class="promo-tag">VIP -30%</span>
+          <div class="pack-icon">👑💎</div>
+          <h3>Королевский Набор Кумиров</h3>
+          <p>3 Пака Кумиров (92–98 OVR)</p>
+          <button class="buy-btn" onclick="openMultiPack('icon', 3, 6700)">Взять 3 пака — 6700 💰</button>
+        </div>
+
+        <div class="pack-card promo-vip">
+          <span class="promo-tag">МЕГА x10</span>
+          <div class="pack-icon">🚀🎁</div>
+          <h3>Гранд-Фестиваль Паков</h3>
+          <p>10 Золотых паков (85–88 OVR)</p>
+          <button class="buy-btn" onclick="openMultiPack('gold', 10, 9500)">Взять 10 паков — 9500 💰</button>
+        </div>
+
+        <div class="pack-card promo-vip">
+          <span class="promo-tag">102 OVR x3</span>
+          <div class="pack-icon">🛸⚡⚡</div>
+          <h3>Набор Сверхновых x3</h3>
+          <p>3 Пака Сверхновых (100–102 OVR)</p>
+          <button class="buy-btn" onclick="openMultiPack('fut102', 3, 12500)">Взять 3 пака — 12500 💰</button>
+        </div>
+
+        <div class="pack-card promo-vip">
+          <span class="promo-tag">105 OVR x3</span>
+          <div class="pack-icon">🌠👑🔱</div>
+          <h3>Ультра-Набор Титанов x3</h3>
+          <p>3 Пака Титанов (103–105 OVR)</p>
+          <button class="buy-btn" onclick="openMultiPack('ultra105', 3, 19500)">Взять 3 пака — 19500 💰</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Раздел 3: Матч -->
+    <section id="tab-match" class="tab-content">
+      <div class="league-bar">
+        <span class="league-label">🏅 Лига ИИ:</span>
+        <div id="league-buttons" class="league-buttons"></div>
+      </div>
+
+      <div class="match-setup">
+        <div class="team-card">
+          <h3>Твой состав (11)</h3>
+          <div class="big-ovr" id="my-match-ovr">69</div>
+          <p id="match-formation-text">Схема 4-3-3</p>
+        </div>
+
+        <div class="clock-box">
+          <div class="clock-title">⏱️ СЕКУНДОМЕР</div>
+          <div class="clock-real" id="match-real-timer">00.0s / 45.0s</div>
+          <div class="clock-game" id="match-game-minute">0' (1с = 2 мин игры)</div>
+        </div>
+
+        <div class="team-card enemy">
+          <h3 id="enemy-league-name">Соперник (ИИ)</h3>
+          <div class="big-ovr" id="enemy-match-ovr">72</div>
+          <button class="small-btn" onclick="generateEnemy()">🔄 Другой соперник</button>
+        </div>
+      </div>
+
+      <div class="scoreboard">
+        <div class="score-team">ТЫ</div>
+        <div class="score-digits">
+          <span id="my-score">0</span> : <span id="enemy-score">0</span>
+        </div>
+        <div class="score-team">ИИ</div>
+      </div>
+
+      <div class="match-controls">
+        <button id="start-match-btn" class="start-btn" onclick="startMatch()">
+          ⚽ НАЧАТЬ МАТЧ ДО КОНЦА ВРЕМЕНИ (45 СЕК)
+        </button>
+      </div>
+
+      <div id="match-log" class="match-log">
+        <div class="log-item">Выбери лигу ИИ и нажми «Начать матч»! Матч идёт до конца времени (45 сек реальных = 90' игровых).</div>
+      </div>
+    </section>
+
+    <!-- Раздел 4: Ивент «Золотая Лихорадка» -->
+    <section id="tab-event" class="tab-content">
+      <div class="event-banner">
+        <div>
+          <h3>⚡ ИВЕНТ: ЗОЛОТАЯ ЛИХОРАДКА</h3>
+          <p>Выигрывай матчи подряд, открывай ивент-пак и бей рекорды в мини-челлендже за монеты и кубки!</p>
+        </div>
+        <span class="event-badge">LIVE EVENT</span>
+      </div>
+
+      <div class="event-cards-grid">
+        <!-- Карточка 1: Серия побед -->
+        <div class="event-box">
+          <h4>🔥 Серия побед (3 победы = приз)</h4>
+          <p class="event-muted">Счётчик растёт за каждую победу в матчах (поражение или ничья сбрасывает серию).</p>
+          <div class="streak-meter">
+            <div id="event-streak-fill" class="streak-fill" style="width: 0%;"></div>
+          </div>
+          <div class="streak-caption">
+            Серия: <strong id="event-streak-count">0</strong> / 3 🏆
+          </div>
+          <div class="event-reward-text">Награда за 3 подряд: <strong>+4 000 💰</strong> и <strong>+4 🏆</strong></div>
+        </div>
+
+        <!-- Карточка 2: Ивент-пак -->
+        <div class="event-box">
+          <h4>🎁 Ивент-пак Лихорадки</h4>
+          <p class="event-muted">Шанс вытащить карту 88–105 OVR, кубки или крупный куш монет.</p>
+          <div class="event-reward-text">Стоимость: <strong>2 200 💰</strong></div>
+          <button class="buy-btn" onclick="openEventFeverPack()">Открыть ивент-пак — 2200 💰</button>
+        </div>
+      </div>
+
+      <!-- Карточка 3: Мини-игра «Точный удар (10 сек)» -->
+      <div class="event-box minigame-box">
+        <div class="minigame-header">
+          <div>
+            <h4>🎯 Мини-игра: Пенальти-атака (10 сек)</h4>
+            <p class="event-muted">Жми по мячу в воротах как можно быстрее! Каждый гол даёт монеты, а от 8 голов — бонусный кубок 🏆.</p>
+          </div>
+          <div class="minigame-stats">
+            <span>⏱️ <strong id="drill-timer">10.0s</strong></span>
+            <span>⚽ Голы: <strong id="drill-score">0</strong></span>
+          </div>
+        </div>
+
+        <div id="drill-arena" class="drill-arena">
+          <button id="drill-ball" class="drill-ball" onclick="hitDrillBall(event)" disabled>⚽</button>
+          <div id="drill-overlay-msg" class="drill-overlay-msg">Нажми «Старт челленджа», чтобы начать!</div>
+        </div>
+
+        <button id="drill-start-btn" class="start-btn drill-start-btn" onclick="startPenaltyDrill()">
+          🚀 СТАРТ ЧЕЛЛЕНДЖА (10 СЕК)
+        </button>
+      </div>
+    </section>
+
+    <!-- Раздел 5: Промокоды -->
+    <section id="tab-promos" class="tab-content">
+      <div class="promo-box">
+        <h3>🎟️ Промокоды</h3>
+        <p class="promo-desc">КУПИТЬ ПРОМОКОДЫ МОЖНО НА САЙТЕ ULTIMATE SQUAD FC26</p>
+
+        <div class="promo-form">
+          <input
+            type="text"
+            id="promo-input"
+            placeholder="Введите промокод..."
+            autocomplete="off"
+          />
+          <button class="promo-submit-btn" onclick="redeemPromoCode()">Активировать</button>
+        </div>
+
+        <div id="promo-message" class="promo-message"></div>
+      </div>
+    </section>
+
+    <!-- Окно выпадения игроков -->
+    <div id="pack-reveal" class="reveal-overlay hidden">
+      <div class="reveal-box">
+        <p class="reveal-title" id="reveal-counter">НОВЫЙ ИГРОК!</p>
+        <div id="revealed-card"></div>
+        <div class="reveal-actions">
+          <button id="equip-now-btn" class="action-btn primary">В основу</button>
+          <button id="sell-now-btn" class="action-btn secondary">Продать</button>
+          <button id="next-card-btn" class="action-btn hidden">Следующий пак →</button>
+          <button id="close-reveal-btn" class="action-btn">В клуб</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Всплывающее уведомление -->
+    <div id="toast-notify" class="toast-notify hidden"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
